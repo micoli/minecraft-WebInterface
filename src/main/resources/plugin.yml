@@ -1,0 +1,8 @@
+name: HeroesInterface
+main: org.micoli.minecraft.heroesInterface.HeroesInterface
+version: 0.1
+description: hseroes interface 
+depend : [Heroes]
+commands:
+    heroesint:
+      description: main command 
