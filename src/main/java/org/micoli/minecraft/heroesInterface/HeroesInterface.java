@@ -29,6 +29,7 @@ public class HeroesInterface extends QDBukkitPlugin implements ActionListener {
 	/** The instance. */
 	private static HeroesInterface instance;
 
+	/** The executor. */
 	QDCommandManager executor;
 
 	/** The dynmap plugin. */
@@ -115,6 +116,9 @@ public class HeroesInterface extends QDBukkitPlugin implements ActionListener {
 		setComments((Player) sender, false);
 	}
 	
+	/**
+	 * List classes.
+	 */
 	public void listClasses(){
 		if (heroesPlugin == null) {
 			ServerLogger.log("Heroes plugin unavailable");
