@@ -1,8 +1,8 @@
-name: HeroesInterface
-main: org.micoli.minecraft.heroesInterface.HeroesInterface
+name: WebInterface
+main: org.micoli.minecraft.webInterface.WebInterface
 version: 0.1
-description: hseroes interface 
-depend : [Heroes]
+description: Heroes, Items and recipes interface 
+softdepend : [Heroes]
 commands:
     heroesint:
       description: main command 

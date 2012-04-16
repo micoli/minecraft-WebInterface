@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.micoli.minecraft</groupId>
-	<artifactId>morg-HeroesInterface</artifactId>
+	<artifactId>morg-WebInterface</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -54,6 +54,13 @@
 				<directory>src/main/resources/</directory>
 				<includes>
 					<include>plugin.yml</include>
+					<include>items.txt</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources/images/</directory>
+				<includes>
+					<include>**</include>
 				</includes>
 			</resource>
 		</resources>
