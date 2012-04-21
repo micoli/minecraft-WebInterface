@@ -6,7 +6,7 @@ package org.micoli.minecraft.webInterface.entities;
  */
 public class IconDef {
 	
-	/** The filename. */
+	/** The filename.*/
 	public String filename = null;
 	
 	/** The sub name. */

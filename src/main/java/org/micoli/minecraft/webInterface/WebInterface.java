@@ -12,7 +12,7 @@ import org.micoli.minecraft.bukkit.QDCommandManager;
 import org.micoli.minecraft.utils.ChatFormater;
 import org.micoli.minecraft.utils.Task;
 import org.micoli.minecraft.webInterface.entities.HeroesExporter;
-import org.micoli.minecraft.webInterface.entities.ItemDefinition;
+import org.micoli.minecraft.webInterface.entities.ItemDefinitionExporter;
 
 /**
  * The Class LocalPlan.
@@ -23,8 +23,8 @@ public class WebInterface extends QDBukkitPlugin implements ActionListener {
 	private static WebInterface instance;
 
 	/** The executor. */
-	QDCommandManager executor;
-	
+	protected QDCommandManager executor;
+
 	/**
 	 * Gets the single instance of LocalPlan.
 	 * 
@@ -44,22 +44,21 @@ public class WebInterface extends QDBukkitPlugin implements ActionListener {
 		
 		instance = this;
 		commandString = "heroesint";
-		withDatabase = false;
 		super.onEnable();
-		log(ChatFormater.format("%s version enabled", this.pdfFile.getName(), this.pdfFile.getVersion()));
-
+		logger.log(ChatFormater.format("%s version enabled", this.pdfFile.getName(), this.pdfFile.getVersion()));
 		
 		saveConfig();
 
 		executor = new QDCommandManager(this, new Class[] { getClass() });
 		Task runningTask = new Task(this, this) {
 			public void run() {
-				ItemDefinition.initialize(instance);
-				ItemDefinition.exportDatas();
+				ItemDefinitionExporter.initialize(instance);
+				ItemDefinitionExporter.exportDatas();
 				
 				HeroesExporter heroesExporter= new HeroesExporter(instance);
 				heroesExporter.exportConfig();
 				heroesExporter.exportPlayers();	
+				logger.log("Export finished");
 			}
 		};
 		runningTask.startDelayed(20L);
@@ -114,8 +113,8 @@ public class WebInterface extends QDBukkitPlugin implements ActionListener {
 	 * @throws Exception
 	 *             the exception
 	 */
-	@QDCommand(aliases = "list", permissions = { "localplan.list" }, usage = "[<player>]", description = "list all parcel belonging to a given player, if no player given then use the current player")
-	public void cmd_list(CommandSender sender, Command command, String label, String[] args) throws Exception {
+	@QDCommand(aliases = "scan", permissions = {  }, usage = "[<player>]", description = "list all parcel belonging to a given player, if no player given then use the current player")
+	public void cmd_scan(CommandSender sender, Command command, String label, String[] args) throws Exception {
 		HeroesExporter heroesExporter= new HeroesExporter(instance);
 		heroesExporter.exportConfig();	
 		heroesExporter.exportPlayers();	

@@ -10,9 +10,8 @@ import java.util.Set;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.micoli.minecraft.bukkit.QDBukkitPlugin;
 import org.micoli.minecraft.utils.Json;
-import org.micoli.minecraft.utils.ServerLogger;
 import org.micoli.minecraft.webInterface.WebInterface;
 
 import com.herocraftonline.heroes.Heroes;
@@ -30,14 +29,14 @@ public class HeroesExporter {
 	Heroes heroesPlugin;
 	
 	/** The plugin. */
-	JavaPlugin plugin;
+	QDBukkitPlugin plugin;
 
 	/**
 	 * Instantiates a new heroes exporter.
 	 *
 	 * @param plugin the plugin
 	 */
-	public HeroesExporter(JavaPlugin plugin) {
+	public HeroesExporter(QDBukkitPlugin plugin) {
 		this.plugin = plugin;
 		heroesPlugin = (Heroes) plugin.getServer().getPluginManager().getPlugin("Heroes");
 	}
@@ -373,9 +372,9 @@ public class HeroesExporter {
 	 * Export players.
 	 */
 	public void exportPlayers() {
-		ServerLogger.log("Heroes ExportPlayers");
+		plugin.logger.log("Heroes ExportPlayers");
 		if (heroesPlugin == null) {
-			ServerLogger.log("Heroes plugin unavailable");
+			plugin.logger.log("Heroes plugin unavailable");
 		} else {
 			Map<String, HeroFormat> heroes = new HashMap<String, HeroFormat>();
 			Iterator<Hero> heroesIterator = heroesPlugin.getCharacterManager().getHeroes().iterator();
@@ -407,7 +406,7 @@ public class HeroesExporter {
 			}
 			File path = ((WebInterface)plugin).getExportJsonPath();
 			Json.exportObjectToJson(String.format("%s/__allheroes.json",path), heroes);
-			ServerLogger.log(Json.exportObjectToJson(heroes));
+			//	ServerLogger.log(Json.exportObjectToJson(heroes));
 		}
 	}
 
@@ -424,7 +423,7 @@ public class HeroesExporter {
 			Object val = heroesPlugin.getConfig().get(sectionName + "." + propertyName);
 			try {
 				subField.set(prm, val);
-				ServerLogger.log("%s::%s => %s", sectionName, propertyName, val);
+				//ServerLogger.log("%s::%s => %s", sectionName, propertyName, val);
 			} catch (IllegalArgumentException e) {
 			} catch (IllegalAccessException e) {
 			}
@@ -435,9 +434,9 @@ public class HeroesExporter {
 	 * Export config.
 	 */
 	public void exportConfig() {
-		ServerLogger.log("Heroes ExportConfig");
+		plugin.logger.log("Heroes ExportConfig");
 		if (heroesPlugin == null) {
-			ServerLogger.log("Heroes plugin unavailable");
+			plugin.logger.log("Heroes plugin unavailable");
 		} else {
 			ExportFormat exportValues = new ExportFormat();
 			getConfigPrm("leveling", exportValues.levelingConfigPrm);
@@ -484,7 +483,8 @@ public class HeroesExporter {
 				File path = ((WebInterface)plugin).getExportJsonPath();
 				Json.exportObjectToJson(String.format("%s/__allclasses.json",path), exportValues);
 			}
-			ServerLogger.log(Json.exportObjectToJson(exportValues));
+			//plugin.logger.log(Json.exportObjectToJson(exportValues));
+			plugin.logger.log("Heroes ExportConfig done");
 		}
 	}
 }
