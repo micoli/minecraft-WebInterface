@@ -17,10 +17,14 @@
 			<id>avaje.org</id>
 			<url>http://www.avaje.org/archiva/repository/internal</url>
 		</repository>
+		<repository>
+			<id>maven2</id>
+			<url>http://repo2.maven.org/maven2</url>
+		</repository>
 	</repositories>
 	<scm>
-		<connection>scm:git:https://github.com/micoli/minecraft-LocalPlan.git</connection>
-		<developerConnection>scm:git:https://github.com/micoli/minecraft-LocalPlan.git</developerConnection>
+		<connection>scm:git:https://github.com/micoli/minecraft-WebInterface.git</connection>
+		<developerConnection>scm:git:https://github.com/micoli/minecraft-WebInterface.git</developerConnection>
 		<url>https://github.com/micoli/minecraft-LocalPlan.git</url>
 	</scm>
 	<dependencies>
@@ -43,6 +47,11 @@
 			<groupId>com.herocraftonline</groupId>
 			<artifactId>heroes</artifactId>
 			<version>1.1.1440</version>
+		</dependency>
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+			<version>1.10</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -123,6 +132,7 @@
 								<includes>
 									<include>org.micoli.minecraft:morg-utils:jar:*</include>
 									<include>com.lennardf1989:bukkitex</include>
+									<include>org.yaml.snakeyaml:snakeyaml:jar:*</include>
 								</includes>
 							</artifactSet>
 							<filters>

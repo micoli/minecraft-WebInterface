@@ -10,7 +10,8 @@ import org.micoli.minecraft.bukkit.QDBukkitPlugin;
 import org.micoli.minecraft.bukkit.QDCommand;
 import org.micoli.minecraft.bukkit.QDCommandManager;
 import org.micoli.minecraft.utils.Task;
-import org.micoli.minecraft.webInterface.entities.HeroesExporter;
+import org.micoli.minecraft.webInterface.entities.HeroesConfigExporter;
+import org.micoli.minecraft.webInterface.entities.HeroesPlayerExporter;
 import org.micoli.minecraft.webInterface.entities.ItemDefinitionExporter;
 
 /**
@@ -45,22 +46,29 @@ public class WebInterface extends QDBukkitPlugin implements ActionListener {
 		commandString = "heroesint";
 		super.onEnable();
 		logger.log("%s version enabled", this.pdfFile.getName(), this.pdfFile.getVersion());
-		
 		saveConfig();
 
 		executor = new QDCommandManager(this, new Class[] { getClass() });
 		Task runningTask = new Task(this, this) {
 			public void run() {
-				ItemDefinitionExporter.initialize(instance);
-				ItemDefinitionExporter.exportDatas();
-				
-				HeroesExporter heroesExporter= new HeroesExporter(instance);
-				heroesExporter.exportConfig();
-				heroesExporter.exportPlayers();	
-				logger.log("Export finished");
+				instance.exportAll();
 			}
 		};
 		runningTask.startDelayed(20L);
+	}
+	
+	public void exportAll(){
+		logger.log("Export Items");
+		ItemDefinitionExporter.initialize(instance);
+		ItemDefinitionExporter.exportDatas();
+		
+		logger.log("Export heroesConfig");
+		HeroesConfigExporter heroesConfigExporter= new HeroesConfigExporter(instance);
+		heroesConfigExporter.exportConfig();
+		logger.log("Export heroesPlayers");
+		HeroesPlayerExporter heroesPlayerExporter= new HeroesPlayerExporter(instance);
+		heroesPlayerExporter.exportPlayers();	
+		logger.log("Export finished");
 	}
 
 	/**
@@ -114,9 +122,7 @@ public class WebInterface extends QDBukkitPlugin implements ActionListener {
 	 */
 	@QDCommand(aliases = "scan", permissions = {  }, usage = "[<player>]", description = "list all parcel belonging to a given player, if no player given then use the current player")
 	public void cmd_scan(CommandSender sender, Command command, String label, String[] args) throws Exception {
-		HeroesExporter heroesExporter= new HeroesExporter(instance);
-		heroesExporter.exportConfig();	
-		heroesExporter.exportPlayers();	
+		instance.exportAll();	
 	}
 	/**
 	 * Gets the export json path.
