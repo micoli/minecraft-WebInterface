@@ -17,7 +17,6 @@ import javax.imageio.ImageIO;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.Recipe;
-import org.micoli.minecraft.utils.ChatFormater;
 import org.micoli.minecraft.utils.Json;
 import org.micoli.minecraft.webInterface.WebInterface;
 
@@ -87,11 +86,11 @@ public class ItemDefinitionExporter {
 			imgItems = ImageIO.read(plugin.getClass().getClassLoader().getResourceAsStream("items.png"));
 			imgSpecial = ImageIO.read(plugin.getClass().getClassLoader().getResourceAsStream("special.png"));
 		} catch (Exception e) {
-			plugin.logger.log(ChatFormater.format("error reading images tiles :: %s", e.toString()));
+			plugin.logger.log("error reading images tiles :: %s", e.toString());
 			e.printStackTrace();
 		}
 
-		plugin.logger.log(ChatFormater.format("reading items.txt"));
+		plugin.logger.log("reading items.txt");
 		Integer maxId = parseItemsTxt(plugin.getClass().getClassLoader().getResourceAsStream("items.txt"));
 		ItemDefinition.allIcons = new BufferedImage(16 * (maxId + 1), 16 * (16 + 1), imgTerrain.getType());
 	}
@@ -150,7 +149,7 @@ public class ItemDefinitionExporter {
 	 */
 	public static void exportDatas() {
 		List<SubDataIt> listSd = new ArrayList<SubDataIt>();
-		plugin.logger.log(ChatFormater.format("reading items.txt"));
+		plugin.logger.log("Exporting datas");
 		
 		Iterator<Integer> iterator = getItemDefinitions().keySet().iterator();
 

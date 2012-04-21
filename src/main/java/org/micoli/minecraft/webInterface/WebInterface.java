@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.micoli.minecraft.bukkit.QDBukkitPlugin;
 import org.micoli.minecraft.bukkit.QDCommand;
 import org.micoli.minecraft.bukkit.QDCommandManager;
-import org.micoli.minecraft.utils.ChatFormater;
 import org.micoli.minecraft.utils.Task;
 import org.micoli.minecraft.webInterface.entities.HeroesExporter;
 import org.micoli.minecraft.webInterface.entities.ItemDefinitionExporter;
@@ -45,7 +44,7 @@ public class WebInterface extends QDBukkitPlugin implements ActionListener {
 		instance = this;
 		commandString = "heroesint";
 		super.onEnable();
-		logger.log(ChatFormater.format("%s version enabled", this.pdfFile.getName(), this.pdfFile.getVersion()));
+		logger.log("%s version enabled", this.pdfFile.getName(), this.pdfFile.getVersion());
 		
 		saveConfig();
 
