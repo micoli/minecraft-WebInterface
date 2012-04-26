@@ -1,5 +1,7 @@
 package org.micoli.minecraft.webInterface;
 
+//  scp /Users/o.michaud/Documents/workspace/minecraft-LocalPlan/target/morg-LocalPlan-0.1.1-SNAPSHOT.jar  micoli@craft.micoli.org:/opt/minecraft/plugins/.
+
 import java.awt.event.ActionListener;
 import java.io.File;
 

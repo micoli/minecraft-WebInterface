@@ -110,7 +110,7 @@ public class HeroesPlayerExporter {
 						Yaml yaml = new Yaml();
 						try {
 							Object heroData = yaml.load(new FileInputStream(new File(playerFilename)));
-							plugin.logger.log(heroData.toString());
+							//plugin.logger.log(heroData.toString());
 							heroes.put(playersSubPath[j].replace(".yml", ""), heroData);
 						} catch (FileNotFoundException e) {
 							e.printStackTrace();
