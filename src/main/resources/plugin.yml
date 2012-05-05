@@ -1,8 +1,8 @@
 name: WebInterface
 main: org.micoli.minecraft.webInterface.WebInterface
-version: 0.1
+version: 0.2
 description: Heroes, Items and recipes interface 
 depend: [Vault,morgUtils,Heroes]
 commands:
-    heroesint:
+    webinterface:
       description: main command 

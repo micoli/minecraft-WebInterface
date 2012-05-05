@@ -43,12 +43,10 @@ public class WebInterface extends QDBukkitPlugin implements ActionListener {
 	 */
 	@Override
 	public void onEnable() {
-		
 		instance = this;
-		commandString = "heroesint";
+		commandString = "webinterface";
 		super.onEnable();
 		logger.log("%s version enabled", this.pdfFile.getName(), this.pdfFile.getVersion());
-		saveConfig();
 
 		executor = new QDCommandManager(this, new Class[] { getClass() });
 		Task runningTask = new Task(this, this) {
@@ -67,9 +65,11 @@ public class WebInterface extends QDBukkitPlugin implements ActionListener {
 		logger.log("Export heroesConfig");
 		HeroesConfigExporter heroesConfigExporter= new HeroesConfigExporter(instance);
 		heroesConfigExporter.exportConfig();
+		
 		logger.log("Export heroesPlayers");
 		HeroesPlayerExporter heroesPlayerExporter= new HeroesPlayerExporter(instance);
-		heroesPlayerExporter.exportPlayers();	
+		heroesPlayerExporter.exportPlayers();
+		
 		logger.log("Export finished");
 	}
 
