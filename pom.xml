@@ -41,7 +41,7 @@
 		<dependency>
 			<groupId>org.micoli.minecraft</groupId>
 			<artifactId>morg-utils</artifactId>
-			<version>0.1.1-SNAPSHOT</version>
+			<version>0.5.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.herocraftonline</groupId>
@@ -52,6 +52,40 @@
 			<groupId>org.yaml</groupId>
 			<artifactId>snakeyaml</artifactId>
 			<version>1.10</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sk89q</groupId>
+			<artifactId>worldedit</artifactId>
+			<version>5.4-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sk89q</groupId>
+			<artifactId>worldguard</artifactId>
+			<version>5.5.2-SNAPSHOT</version>
+			<!-- mvn install:install-file -Dfile=WorldGuard.jar -DgroupId=com.sk89q 
+				-DartifactId=worldguard -Dversion=5.5.2-SNAPSHOT -Dpackaging=jar -->
+			<!-- mvn install:install-file -Dfile=WorldEdit.jar -DgroupId=com.sk89q 
+				-DartifactId=worldedit -Dversion=5.3-SNAPSHOT -Dpackaging=jar -->
+		</dependency>
+		<dependency>
+			<groupId>org.dynmap</groupId>
+			<artifactId>DynmapCoreAPI</artifactId>
+			<version>[0.28,)</version>
+		</dependency>
+		<dependency>
+			<groupId>org.dynmap</groupId>
+			<artifactId>dynmap</artifactId>
+			<version>[0.28,)</version>
+		</dependency>
+		<dependency>
+			<groupId>org.dynmap</groupId>
+			<artifactId>DynmapCore</artifactId>
+			<version>[0.36,)</version>
+		</dependency>
+		<dependency>
+			<groupId>com.vividsolutions</groupId>
+			<artifactId>jts</artifactId>
+			<version>1.12</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -116,7 +150,7 @@
 					</archive>
 				</configuration>
 			</plugin>
-			<!-- <plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
 				<version>1.4</version>
@@ -130,23 +164,13 @@
 							<shadedArtifactAttached>false</shadedArtifactAttached>
 							<artifactSet>
 								<includes>
-									<include>org.micoli.minecraft:morg-utils:jar:*</include>
-									<include>com.lennardf1989:bukkitex</include>
-									<include>org.yaml.snakeyaml:snakeyaml:jar:*</include>
+									<include>com.vividsolutions:jts:jar:*</include>
 								</includes>
 							</artifactSet>
-							<filters>
-								<filter>
-									<artifact>org.micoli.minecraft:morg-utils:jar:*</artifact>
-									<includes>
-										<include>org/micoli/minecraft/**</include>
-									</includes>
-								</filter>
-							</filters>
 						</configuration>
 					</execution>
 				</executions>
-			</plugin> -->
+			</plugin>
 			<!-- Assembly -->
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>

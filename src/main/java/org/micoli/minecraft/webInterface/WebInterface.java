@@ -15,6 +15,7 @@ import org.micoli.minecraft.utils.Task;
 import org.micoli.minecraft.webInterface.entities.HeroesConfigExporter;
 import org.micoli.minecraft.webInterface.entities.HeroesPlayerExporter;
 import org.micoli.minecraft.webInterface.entities.ItemDefinitionExporter;
+import org.micoli.minecraft.webInterface.entities.ParcelExporter;
 
 /**
  * The Class LocalPlan.
@@ -35,6 +36,11 @@ public class WebInterface extends QDBukkitPlugin implements ActionListener {
 	public static WebInterface getInstance() {
 		return instance;
 	}
+	/** The parcel exporter. */
+	private ParcelExporter parcelExporter;
+
+	/** The parcel exporter path. */
+	private String parcelExporterPath = "parcelImages";
 
 	/*
 	 * (non-Javadoc)
@@ -49,12 +55,19 @@ public class WebInterface extends QDBukkitPlugin implements ActionListener {
 		logger.log("%s version enabled", this.pdfFile.getName(), this.pdfFile.getVersion());
 
 		executor = new QDCommandManager(this, new Class[] { getClass() });
+		
+		configFile.set("ParcelExporter.imagePath", configFile.getString("ParcelExporter.imagePath", getParcelExporterPath()));
+		setParcelExporterPath(configFile.getString("ParcelExporter.imagePath"));
+		
+		saveConfig();
+		
 		Task runningTask = new Task(this, this) {
 			public void run() {
 				instance.exportAll();
 			}
 		};
 		runningTask.startDelayed(20L);
+
 	}
 	
 	public void exportAll(){
@@ -70,43 +83,29 @@ public class WebInterface extends QDBukkitPlugin implements ActionListener {
 		HeroesPlayerExporter heroesPlayerExporter= new HeroesPlayerExporter(instance);
 		heroesPlayerExporter.exportPlayers();
 		
+		logger.log("Export Parcels");
+		parcelExporter = new ParcelExporter(instance);
+		parcelExporter.getMaps();
 		logger.log("Export finished");
 	}
 
 	/**
-	 * Cmd_comments on.
-	 * 
-	 * @param sender
-	 *            the sender
-	 * @param command
-	 *            the command
-	 * @param label
-	 *            the label
-	 * @param args
-	 *            the args
+	 * Gets the parcel exporter path.
+	 *
+	 * @return the parcelExporterPath
 	 */
-	@QDCommand(aliases = "commentsOn", permissions = {}, usage = "", description = "enable plugin comments")
-	public void cmd_commentsOn(CommandSender sender, Command command, String label, String[] args) {
-		setComments((Player) sender, true);
+	public String getParcelExporterPath() {
+		return parcelExporterPath;
 	}
 
 	/**
-	 * Cmd_comments off.
-	 * 
-	 * @param sender
-	 *            the sender
-	 * @param command
-	 *            the command
-	 * @param label
-	 *            the label
-	 * @param args
-	 *            the args
+	 * Sets the parcel exporter path.
+	 *
+	 * @param parcelExporterPath the parcelExporterPath to set
 	 */
-	@QDCommand(aliases = "commentsOff", permissions = {}, usage = "", description = "disabled plugin comments")
-	public void cmd_commentsOff(CommandSender sender, Command command, String label, String[] args) {
-		setComments((Player) sender, false);
+	public void setParcelExporterPath(String parcelExporterPath) {
+		this.parcelExporterPath = parcelExporterPath;
 	}
-	
 	
 	/**
 	 * Cmd_list.
