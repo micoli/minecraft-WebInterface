@@ -1,4 +1,4 @@
-package org.micoli.minecraft.webInterface.entities;
+package org.micoli.minecraft.webInterface.entities.items;
 
 import java.util.HashMap;
 import java.util.List;

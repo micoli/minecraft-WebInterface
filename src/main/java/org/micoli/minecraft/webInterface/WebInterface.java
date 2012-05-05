@@ -12,10 +12,10 @@ import org.micoli.minecraft.bukkit.QDBukkitPlugin;
 import org.micoli.minecraft.bukkit.QDCommand;
 import org.micoli.minecraft.bukkit.QDCommandManager;
 import org.micoli.minecraft.utils.Task;
-import org.micoli.minecraft.webInterface.entities.HeroesConfigExporter;
-import org.micoli.minecraft.webInterface.entities.HeroesPlayerExporter;
-import org.micoli.minecraft.webInterface.entities.ItemDefinitionExporter;
-import org.micoli.minecraft.webInterface.entities.ParcelExporter;
+import org.micoli.minecraft.webInterface.entities.heroes.HeroesConfigExporter;
+import org.micoli.minecraft.webInterface.entities.heroes.HeroesPlayerExporter;
+import org.micoli.minecraft.webInterface.entities.items.ItemDefinitionExporter;
+import org.micoli.minecraft.webInterface.entities.localPlan.ParcelExporter;
 
 /**
  * The Class LocalPlan.

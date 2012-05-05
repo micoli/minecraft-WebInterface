@@ -1,4 +1,4 @@
-package org.micoli.minecraft.webInterface.entities;
+package org.micoli.minecraft.webInterface.entities.items;
 
 // TODO: Auto-generated Javadoc
 /**

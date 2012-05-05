@@ -1,4 +1,4 @@
-package org.micoli.minecraft.webInterface.entities;
+package org.micoli.minecraft.webInterface.entities.heroes;
 
 import java.io.File;
 import java.lang.reflect.Field;

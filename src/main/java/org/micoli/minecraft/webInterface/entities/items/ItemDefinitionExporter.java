@@ -1,4 +1,4 @@
-package org.micoli.minecraft.webInterface.entities;
+package org.micoli.minecraft.webInterface.entities.items;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;

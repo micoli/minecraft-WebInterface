@@ -1,4 +1,4 @@
-package org.micoli.minecraft.webInterface.entities;
+package org.micoli.minecraft.webInterface.entities.localPlan;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
