@@ -92,7 +92,7 @@ public class ItemDefinitionExporter {
 
 		plugin.logger.log("reading items.txt");
 		Integer maxId = parseItemsTxt(plugin.getClass().getClassLoader().getResourceAsStream("items.txt"));
-		ItemDefinition.allIcons = new BufferedImage(16 * (maxId + 1), 16 * (16 + 1), imgTerrain.getType());
+		ItemDefinition.setAllIcons(new BufferedImage(16 * (maxId + 1), 16 * (16 + 1), imgTerrain.getType()));
 	}
 	/**
 	 * Parses the items txt.
@@ -168,9 +168,9 @@ public class ItemDefinitionExporter {
 		File jpgWriter = new File(String.format("%s/__allicons.jpg", path.getAbsoluteFile()));
 		File gifWriter = new File(String.format("%s/__allicons.gif", path.getAbsoluteFile()));
 		try {
-			ImageIO.write(ItemDefinition.allIcons, "png", pngWriter);
-			ImageIO.write(ItemDefinition.allIcons, "jpg", jpgWriter);
-			ImageIO.write(ItemDefinition.allIcons, "gif", gifWriter);
+			ImageIO.write(ItemDefinition.getAllIcons(), "png", pngWriter);
+			ImageIO.write(ItemDefinition.getAllIcons(), "jpg", jpgWriter);
+			ImageIO.write(ItemDefinition.getAllIcons(), "gif", gifWriter);
 		} catch (Exception e) {
 			plugin.logger.dumpStackTrace(e);
 		}

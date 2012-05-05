@@ -22,7 +22,7 @@ public class ItemDefinition {
 	/** The material. */
 	private Material material;
 
-	public static BufferedImage allIcons;
+	private static BufferedImage allIcons;
 	
 	/** The scale. */
 	private Boolean scale = false;
@@ -31,7 +31,7 @@ public class ItemDefinition {
 	private File path;
 
 	/** The icons. */
-	HashMap<Integer, IconDef> icons = new HashMap<Integer, IconDef>();
+	private HashMap<Integer, IconDef> icons = new HashMap<Integer, IconDef>();
 
 	/**
 	 * Gets the material.
@@ -49,6 +49,20 @@ public class ItemDefinition {
 	 */
 	public void setMaterial(Material material) {
 		this.material = material ;
+	}
+
+	/**
+	 * @return the allIcons
+	 */
+	public static BufferedImage getAllIcons() {
+		return allIcons;
+	}
+
+	/**
+	 * @param allIcons the allIcons to set
+	 */
+	public static void setAllIcons(BufferedImage allIcons) {
+		ItemDefinition.allIcons = allIcons;
 	}
 
 	/**
@@ -108,7 +122,7 @@ public class ItemDefinition {
 		}
 		// ServerLogger.log("export X %d=>%d=>%d",mat.getId(),data,mat.getId()*16,Math.min(32,data)*16);
 
-		Images.copySrcIntoDstAt(bi, allIcons, material.getId() * 16, Math.min(16, data) * 16);
+		Images.copySrcIntoDstAt(bi, getAllIcons(), material.getId() * 16, Math.min(16, data) * 16);
 		return bi;
 	}
 
