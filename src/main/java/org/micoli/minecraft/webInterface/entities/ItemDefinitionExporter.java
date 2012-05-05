@@ -87,7 +87,7 @@ public class ItemDefinitionExporter {
 			imgSpecial = ImageIO.read(plugin.getClass().getClassLoader().getResourceAsStream("special.png"));
 		} catch (Exception e) {
 			plugin.logger.log("error reading images tiles :: %s", e.toString());
-			e.printStackTrace();
+			plugin.logger.dumpStackTrace(e);
 		}
 
 		plugin.logger.log("reading items.txt");
@@ -138,8 +138,8 @@ public class ItemDefinitionExporter {
 			} finally {
 				input.close();
 			}
-		} catch (IOException ex) {
-			ex.printStackTrace();
+		} catch (IOException e) {
+			plugin.logger.dumpStackTrace(e);
 		}
 		return maxId;
 	}
@@ -172,7 +172,7 @@ public class ItemDefinitionExporter {
 			ImageIO.write(ItemDefinition.allIcons, "jpg", jpgWriter);
 			ImageIO.write(ItemDefinition.allIcons, "gif", gifWriter);
 		} catch (Exception e) {
-			e.printStackTrace();
+			plugin.logger.dumpStackTrace(e);
 		}
 	}
 

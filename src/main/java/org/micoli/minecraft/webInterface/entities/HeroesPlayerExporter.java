@@ -113,7 +113,7 @@ public class HeroesPlayerExporter {
 							//plugin.logger.log(heroData.toString());
 							heroes.put(playersSubPath[j].replace(".yml", ""), heroData);
 						} catch (FileNotFoundException e) {
-							e.printStackTrace();
+							plugin.logger.dumpStackTrace(e);
 						}
 					}
 				}
