@@ -78,7 +78,7 @@ public class ItemDefinition {
 	 * Export.
 	 */
 	public void export() {
-		path = ItemDefinitionExporter.plugin.getExportJsonPath();
+		path = ItemDefinitionExporter.plugin.getExportJsonPath(ItemDefinitionExporter.plugin.getItemsExporterCfg());
 		//ServerLogger.log("==>export  " + material.name());
 
 		exportData();

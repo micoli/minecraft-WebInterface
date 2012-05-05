@@ -20,10 +20,10 @@ import com.herocraftonline.heroes.characters.Hero;
 
 public class HeroesPlayerExporter {
 	/** The heroes plugin. */
-	Heroes heroesPlugin;
+	private Heroes heroesPlugin;
 
 	/** The plugin. */
-	QDBukkitPlugin plugin;
+	private WebInterface plugin;
 
 	/**
 	 * Instantiates a new heroes exporter.
@@ -31,7 +31,7 @@ public class HeroesPlayerExporter {
 	 * @param plugin
 	 *            the plugin
 	 */
-	public HeroesPlayerExporter(QDBukkitPlugin plugin) {
+	public HeroesPlayerExporter(WebInterface plugin) {
 		this.plugin = plugin;
 		heroesPlugin = (Heroes) plugin.getServer().getPluginManager().getPlugin("Heroes");
 	}
@@ -118,6 +118,8 @@ public class HeroesPlayerExporter {
 					}
 				}
 			}
+			File path = plugin.getExportJsonPath(plugin.getHeroesExporterCfg());
+			Json.exportObjectToJson(String.format("%s/__allheroes.json", path), heroes);
 		}
 	}
 
@@ -158,7 +160,7 @@ public class HeroesPlayerExporter {
 				// Set<String> suppressedSkills =
 				// hero.getSuppressedSkills();
 			}
-			File path = ((WebInterface) plugin).getExportJsonPath();
+			File path = plugin.getExportJsonPath(plugin.getHeroesExporterCfg());
 			Json.exportObjectToJson(String.format("%s/__allheroes.json", path), heroes);
 			// ServerLogger.log(Json.exportObjectToJson(heroes));
 		}

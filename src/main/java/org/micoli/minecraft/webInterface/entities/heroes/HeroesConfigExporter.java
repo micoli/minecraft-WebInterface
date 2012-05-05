@@ -23,10 +23,10 @@ import com.herocraftonline.heroes.characters.skill.SkillType;
 public class HeroesConfigExporter {
 
 	/** The heroes plugin. */
-	Heroes heroesPlugin;
+	private Heroes heroesPlugin;
 
 	/** The plugin. */
-	QDBukkitPlugin plugin;
+	private WebInterface plugin;
 
 	/**
 	 * Instantiates a new heroes exporter.
@@ -34,7 +34,7 @@ public class HeroesConfigExporter {
 	 * @param plugin
 	 *            the plugin
 	 */
-	public HeroesConfigExporter(QDBukkitPlugin plugin) {
+	public HeroesConfigExporter(WebInterface plugin) {
 		this.plugin = plugin;
 		heroesPlugin = (Heroes) plugin.getServer().getPluginManager().getPlugin("Heroes");
 	}
@@ -387,7 +387,7 @@ public class HeroesConfigExporter {
 				}
 
 				exportValues.classes.put(classConfig.name, classConfig);
-				File path = ((WebInterface) plugin).getExportJsonPath();
+				File path = plugin.getExportJsonPath(plugin.getHeroesExporterCfg());
 				Json.exportObjectToJson(String.format("%s/__allclasses.json", path), exportValues);
 			}
 			// plugin.logger.log(Json.exportObjectToJson(exportValues));

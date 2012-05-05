@@ -162,7 +162,7 @@ public class ItemDefinitionExporter {
 			listSd.add(sd);
 		}
 
-		File path = ((WebInterface) plugin).getExportJsonPath();
+		File path = plugin.getExportJsonPath(plugin.getItemsExporterCfg());
 		Json.exportObjectToJson(String.format("%s/__allitems.json", path.getAbsoluteFile()), listSd);
 		File pngWriter = new File(String.format("%s/__allicons.png", path.getAbsoluteFile()));
 		File jpgWriter = new File(String.format("%s/__allicons.jpg", path.getAbsoluteFile()));

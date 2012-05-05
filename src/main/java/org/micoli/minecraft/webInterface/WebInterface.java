@@ -7,7 +7,6 @@ import java.io.File;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.micoli.minecraft.bukkit.QDBukkitPlugin;
 import org.micoli.minecraft.bukkit.QDCommand;
 import org.micoli.minecraft.bukkit.QDCommandManager;
@@ -17,6 +16,7 @@ import org.micoli.minecraft.webInterface.entities.heroes.HeroesPlayerExporter;
 import org.micoli.minecraft.webInterface.entities.items.ItemDefinitionExporter;
 import org.micoli.minecraft.webInterface.entities.localPlan.ParcelExporter;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class LocalPlan.
  */
@@ -40,8 +40,24 @@ public class WebInterface extends QDBukkitPlugin implements ActionListener {
 	private ParcelExporter parcelExporter;
 
 	/** The parcel exporter path. */
-	private String parcelExporterPath = "parcelImages";
+	private String parcelExporterPath = "export/localPlan";
+	
+	/** The Parcel exporter cfg. */
+	final private String ParcelExporterCfg = "ParcelExporter.path";
 
+	/** The items exporter path. */
+	private String heroesExporterPath = "export/heroes";
+	
+	/** The items exporter cfg. */
+	final private String heroesExporterCfg = "heroesExporter.path";
+
+	/** The items exporter path. */
+	private String itemsExporterPath = "export/items";
+	
+	/** The items exporter cfg. */
+	final private String itemsExporterCfg = "itemsExporter.path";
+	
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -56,8 +72,14 @@ public class WebInterface extends QDBukkitPlugin implements ActionListener {
 
 		executor = new QDCommandManager(this, new Class[] { getClass() });
 		
-		configFile.set("ParcelExporter.imagePath", configFile.getString("ParcelExporter.imagePath", getParcelExporterPath()));
-		setParcelExporterPath(configFile.getString("ParcelExporter.imagePath"));
+		configFile.set(ParcelExporterCfg, configFile.getString(ParcelExporterCfg, getParcelExporterPath()));
+		setParcelExporterPath(configFile.getString(ParcelExporterCfg));
+		
+		configFile.set(heroesExporterCfg, configFile.getString(heroesExporterCfg, getHeroesExporterPath()));
+		setHeroesExporterPath(configFile.getString(heroesExporterCfg));
+		
+		configFile.set(itemsExporterCfg, configFile.getString(itemsExporterCfg, getItemsExporterPath()));
+		setItemsExporterPath(configFile.getString(itemsExporterCfg));
 		
 		saveConfig();
 		
@@ -70,6 +92,9 @@ public class WebInterface extends QDBukkitPlugin implements ActionListener {
 
 	}
 	
+	/**
+	 * Export all.
+	 */
 	public void exportAll(){
 		logger.log("Export Items");
 		ItemDefinitionExporter.initialize(instance);
@@ -108,7 +133,74 @@ public class WebInterface extends QDBukkitPlugin implements ActionListener {
 	}
 	
 	/**
-	 * Cmd_list.
+	 * Gets the items exporter path.
+	 *
+	 * @return the itemsExporterPath
+	 */
+	public String getItemsExporterPath() {
+		return itemsExporterPath;
+	}
+
+	/**
+	 * Sets the items exporter path.
+	 *
+	 * @param itemsExporterPath the itemsExporterPath to set
+	 */
+	public void setItemsExporterPath(String itemsExporterPath) {
+		this.itemsExporterPath = itemsExporterPath;
+	}
+
+	/**
+	 * @return the heroesExporterPath
+	 */
+	public String getHeroesExporterPath() {
+		return heroesExporterPath;
+	}
+
+	/**
+	 * @param heroesExporterPath the heroesExporterPath to set
+	 */
+	public void setHeroesExporterPath(String heroesExporterPath) {
+		this.heroesExporterPath = heroesExporterPath;
+	}
+
+	/**
+	 * @return the heroesExporterCfg
+	 */
+	public String getHeroesExporterCfg() {
+		return heroesExporterCfg;
+	}
+
+	/**
+	 * @return the parcelExporter
+	 */
+	public ParcelExporter getParcelExporter() {
+		return parcelExporter;
+	}
+
+	/**
+	 * @param parcelExporter the parcelExporter to set
+	 */
+	public void setParcelExporter(ParcelExporter parcelExporter) {
+		this.parcelExporter = parcelExporter;
+	}
+
+	/**
+	 * @return the parcelExporterCfg
+	 */
+	public String getParcelExporterCfg() {
+		return ParcelExporterCfg;
+	}
+
+	/**
+	 * @return the itemsExporterCfg
+	 */
+	public String getItemsExporterCfg() {
+		return itemsExporterCfg;
+	}
+
+	/**
+	 * CmdScan.
 	 * 
 	 * @param sender
 	 *            the sender
@@ -122,24 +214,30 @@ public class WebInterface extends QDBukkitPlugin implements ActionListener {
 	 *             the exception
 	 */
 	@QDCommand(aliases = "scan", permissions = {  }, usage = "[<player>]", description = "list all parcel belonging to a given player, if no player given then use the current player")
-	public void cmd_scan(CommandSender sender, Command command, String label, String[] args) throws Exception {
+	public void cmdScan(CommandSender sender, Command command, String label, String[] args) throws Exception {
 		instance.exportAll();	
 	}
+	
 	/**
 	 * Gets the export json path.
 	 *
 	 * @return the export json path
 	 */
-	public File getExportJsonPath() {
-		File exportJsonPath = getDataFolder();
-		if (!exportJsonPath.exists()) {
-			exportJsonPath.mkdir();
+	public File getExportJsonPath(String cfg) {
+		File path = getDataFolder();
+		if (!path.exists()) {
+			path.mkdir();
 		}
-		exportJsonPath = new File(getDataFolder(), "exportJson");
-		if (!exportJsonPath.exists()) {
-			exportJsonPath.mkdir();
+		File supPath=getDataFolder();
+		String[] paths = configFile.getString(cfg).split("/");
+		for(int i=0;i<paths.length;i++){
+			path = new File(supPath, paths[i]);
+			if (!path.exists()) {
+				path.mkdir();
+			}
+			supPath = path;
 		}
-		return exportJsonPath;
+		return path;
 	}
 
 }
