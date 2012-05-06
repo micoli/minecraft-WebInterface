@@ -83,7 +83,7 @@ public class ParcelExporter {
 			return;
 		}
 		List<Parcel> parcels = localPlan.getAllParcel();
-		File path = plugin.getExportJsonPath(plugin.getHeroesExporterCfg());
+		File path = plugin.getExportJsonPath(plugin.getParcelExporterCfg());
 		Json.exportObjectToJson(String.format("%s/__allparcels.json", path),parcels);
 
 	}
