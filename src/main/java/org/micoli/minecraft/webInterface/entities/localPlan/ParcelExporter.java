@@ -77,7 +77,7 @@ public class ParcelExporter {
 	 * Export parcels.
 	 */
 	public void exportParcels() {
-		plugin.logger.log("Heroes Parcels");		
+		plugin.logger.log("Parcels");		
 		final LocalPlan localPlan = (LocalPlan) plugin.getServer().getPluginManager().getPlugin("LocalPlan");
 		if (localPlan == null) {
 			plugin.logger.log("Could not get acces to LocalPlan plugin");
@@ -86,7 +86,7 @@ public class ParcelExporter {
 		List<Parcel> parcels = localPlan.getAllParcel();
 		File path = plugin.getExportJsonPath(plugin.getParcelExporterCfg());
 		Json.exportObjectToJson(String.format("%s/__allparcels.json", path),parcels);
-		plugin.logger.log("Heroes Parcels done");		
+		plugin.logger.log("Parcels done");		
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class ParcelExporter {
 	 * @return the maps
 	 */
 	public void exportParcelMaps() {
-		plugin.logger.log("Heroes Parcels maps");		
+		plugin.logger.log("Parcels maps");		
 		final int planeAngle = 180;
 		DynmapCore dynmapCore = PluginEnvironment.getDynmapCorePlugin(plugin);
 		if (dynmapCore == null) {
@@ -219,7 +219,7 @@ public class ParcelExporter {
 				}
 			}
 		}
-		plugin.logger.log("Heroes Parcels maps done");		
+		plugin.logger.log("Parcels maps done");		
 	}
 
 	/**
