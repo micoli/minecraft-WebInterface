@@ -77,6 +77,7 @@ public class ParcelExporter {
 	 * Export parcels.
 	 */
 	public void exportParcels() {
+		plugin.logger.log("Heroes Parcels");		
 		final LocalPlan localPlan = (LocalPlan) plugin.getServer().getPluginManager().getPlugin("LocalPlan");
 		if (localPlan == null) {
 			plugin.logger.log("Could not get acces to LocalPlan plugin");
@@ -85,7 +86,7 @@ public class ParcelExporter {
 		List<Parcel> parcels = localPlan.getAllParcel();
 		File path = plugin.getExportJsonPath(plugin.getParcelExporterCfg());
 		Json.exportObjectToJson(String.format("%s/__allparcels.json", path),parcels);
-
+		plugin.logger.log("Heroes Parcels done");		
 	}
 
 	/**
@@ -94,6 +95,7 @@ public class ParcelExporter {
 	 * @return the maps
 	 */
 	public void exportParcelMaps() {
+		plugin.logger.log("Heroes Parcels maps");		
 		final int planeAngle = 180;
 		DynmapCore dynmapCore = PluginEnvironment.getDynmapCorePlugin(plugin);
 		if (dynmapCore == null) {
@@ -101,7 +103,7 @@ public class ParcelExporter {
 			return;
 		}
 
-		IsoHDPerspective isoHDPerspective = (IsoHDPerspective) MapManager.mapman.hdmapman.perspectives.get("iso_SE_60_vlowres");
+		IsoHDPerspective isoHDPerspective = (IsoHDPerspective) MapManager.mapman.hdmapman.perspectives.get(plugin.getPerspectiveMapsExporter());
 		if (isoHDPerspective == null) {
 			plugin.logger.log("Could not get acces to isoHDPerspective from DynmapCore");
 			return;
@@ -115,8 +117,8 @@ public class ParcelExporter {
 		transform.rotateYZ(planeAngle / 2 - isoHDPerspective.inclination);
 		transform.shearZ(0, Math.tan(Math.toRadians(planeAngle / 2 - isoHDPerspective.inclination)));
 		transform.scale(isoHDPerspective.scale, isoHDPerspective.scale, Math.sin(Math.toRadians(isoHDPerspective.inclination)));
-		plugin.logger.log("Matrix %s", Json.exportObjectToJson(transform));
-		plugin.logger.log("perspective %s", isoHDPerspective.toString());
+		//plugin.logger.log("Matrix %s", Json.exportObjectToJson(transform));
+		//plugin.logger.log("perspective %s", isoHDPerspective.toString());
 
 		for (World world : plugin.getServer().getWorlds()) {
 			String worldName = world.getName();
@@ -136,7 +138,7 @@ public class ParcelExporter {
 					for (i = 0; i < mapTiles.length; i++) {
 						regionTiles.addAll(Arrays.asList(mapTiles[i].getAdjecentTiles()));
 					}
-					plugin.logger.log(" %s => %d tiles %s", region.getId(), mapTiles.length, dynmapCore.getTilesFolder().getAbsolutePath());
+					//plugin.logger.log(" %s => %d tiles %s", region.getId(), mapTiles.length, dynmapCore.getTilesFolder().getAbsolutePath());
 					int minTileX = 0, minTileY = 0, maxTileX = 0, maxTileY = 0;
 					i = 0;
 					for (MapTile maptile : regionTiles) {
@@ -212,11 +214,12 @@ public class ParcelExporter {
 					File path = plugin.getExportJsonPath(plugin.getParcelExporterCfg());
 					Images.saveBufferedImage(exportParcel, String.format("%s/%s__%s.png", path, worldName, region.getId()), "png");
 
-					plugin.logger.log(" %s(%d) => %d %d / %d %d / %d %d", region.getId(), mapTiles.length, minTileX * w, minTileY * h, maxTileX * w + w, maxTileY * h + h, sizex * w, sizey * h);
-					plugin.logger.log("-----------------");
+					//plugin.logger.log(" %s(%d) => %d %d / %d %d / %d %d", region.getId(), mapTiles.length, minTileX * w, minTileY * h, maxTileX * w + w, maxTileY * h + h, sizex * w, sizey * h);
+					//plugin.logger.log("-----------------");
 				}
 			}
 		}
+		plugin.logger.log("Heroes Parcels maps done");		
 	}
 
 	/**

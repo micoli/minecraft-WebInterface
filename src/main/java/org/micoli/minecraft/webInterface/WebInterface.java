@@ -57,6 +57,11 @@ public class WebInterface extends QDBukkitPlugin implements ActionListener {
 	/** The items exporter cfg. */
 	final private String itemsExporterCfg = "itemsExporter.path";
 	
+	/** The perespctive used for maps exporter . */
+	private String perspectiveMapsExporter ="iso_SE_60_vlowres";
+	
+	/** The items exporter cfg. */
+	final private String perspectiveMapsExporterCfg = "mapsExporter.perspective";
 	
 	/*
 	 * (non-Javadoc)
@@ -80,6 +85,9 @@ public class WebInterface extends QDBukkitPlugin implements ActionListener {
 		
 		configFile.set(itemsExporterCfg, configFile.getString(itemsExporterCfg, getItemsExporterPath()));
 		setItemsExporterPath(configFile.getString(itemsExporterCfg));
+		
+		configFile.set(perspectiveMapsExporterCfg, configFile.getString(perspectiveMapsExporterCfg, getPerspectiveMapsExporter()));
+		setPerspectiveMapsExporter(configFile.getString(perspectiveMapsExporterCfg));
 		
 		saveConfig();
 		
@@ -198,6 +206,27 @@ public class WebInterface extends QDBukkitPlugin implements ActionListener {
 	 */
 	public String getItemsExporterCfg() {
 		return itemsExporterCfg;
+	}
+
+	/**
+	 * @return the perspectiveMapsExporter
+	 */
+	public String getPerspectiveMapsExporter() {
+		return perspectiveMapsExporter;
+	}
+
+	/**
+	 * @param perspectiveMapsExporter the perspectiveMapsExporter to set
+	 */
+	public void setPerspectiveMapsExporter(String perspectiveMapsExporter) {
+		this.perspectiveMapsExporter = perspectiveMapsExporter;
+	}
+
+	/**
+	 * @return the perspectiveMapsExporterCfg
+	 */
+	public String getPerspectiveMapsExporterCfg() {
+		return perspectiveMapsExporterCfg;
 	}
 
 	/**
