@@ -110,7 +110,8 @@ public class WebInterface extends QDBukkitPlugin implements ActionListener {
 		
 		logger.log("Export Parcels");
 		parcelExporter = new ParcelExporter(instance);
-		parcelExporter.getMaps();
+		parcelExporter.exportParcelMaps();
+		parcelExporter.exportParcels();
 		logger.log("Export finished");
 	}
 

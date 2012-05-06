@@ -3,6 +3,7 @@ main: org.micoli.minecraft.webInterface.WebInterface
 version: 0.2
 description: Heroes, Items and recipes interface 
 depend: [Vault,morgUtils,Heroes]
+softdepend: [LocalPlan]
 commands:
     webinterface:
       description: main command 

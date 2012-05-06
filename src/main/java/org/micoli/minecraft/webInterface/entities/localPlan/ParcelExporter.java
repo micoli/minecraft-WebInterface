@@ -12,7 +12,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -26,11 +25,12 @@ import org.dynmap.DynmapCore;
 import org.dynmap.DynmapWorld;
 import org.dynmap.MapManager;
 import org.dynmap.MapTile;
-import org.dynmap.bukkit.DynmapPlugin;
 import org.dynmap.hdmap.HDMapTile;
 import org.dynmap.hdmap.IsoHDPerspective;
 import org.dynmap.utils.Matrix3D;
 import org.dynmap.utils.Vector3D;
+import org.micoli.minecraft.localPlan.LocalPlan;
+import org.micoli.minecraft.localPlan.entities.Parcel;
 import org.micoli.minecraft.utils.Images;
 import org.micoli.minecraft.utils.Json;
 import org.micoli.minecraft.utils.PluginEnvironment;
@@ -45,39 +45,55 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.operation.buffer.BufferOp;
 import com.vividsolutions.jts.operation.buffer.BufferParameters;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ParcelExporter.
  */
 public class ParcelExporter {
-	
+
 	/** The plugin. */
 	private WebInterface plugin;
-	
+
 	/** The sea level. */
 	private static final int SeaLevel = 65;
-	
+
 	/** The buffer size. */
 	private static final int BufferSize = 4;
-	
+
 	/** The border size. */
 	private static final int BorderSize = 50;
-	
-	
+
 	/**
 	 * Instantiates a new parcel exporter.
-	 *
-	 * @param instance the instance
+	 * 
+	 * @param instance
+	 *            the instance
 	 */
 	public ParcelExporter(WebInterface instance) {
 		this.plugin = instance;
 	}
 
 	/**
-	 * Gets the maps.
-	 *
+	 * Export parcels.
+	 */
+	public void exportParcels() {
+		final LocalPlan localPlan = (LocalPlan) plugin.getServer().getPluginManager().getPlugin("LocalPlan");
+		if (localPlan == null) {
+			plugin.logger.log("Could not get acces to LocalPlan plugin");
+			return;
+		}
+		List<Parcel> parcels = localPlan.getAllParcel();
+		File path = plugin.getExportJsonPath(plugin.getHeroesExporterCfg());
+		Json.exportObjectToJson(String.format("%s/__allparcels.json", path),parcels);
+
+	}
+
+	/**
+	 * export the parcel maps.
+	 * 
 	 * @return the maps
 	 */
-	public void getMaps() {
+	public void exportParcelMaps() {
 		final int planeAngle = 180;
 		DynmapCore dynmapCore = PluginEnvironment.getDynmapCorePlugin(plugin);
 		if (dynmapCore == null) {
@@ -96,8 +112,8 @@ public class ParcelExporter {
 
 		Matrix3D transform = new Matrix3D(0.0, 0.0, -1.0, -1.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 		transform.rotateXY(planeAngle - isoHDPerspective.azimuth);
-		transform.rotateYZ(planeAngle/2 - isoHDPerspective.inclination);
-		transform.shearZ(0, Math.tan(Math.toRadians(planeAngle/2 - isoHDPerspective.inclination)));
+		transform.rotateYZ(planeAngle / 2 - isoHDPerspective.inclination);
+		transform.shearZ(0, Math.tan(Math.toRadians(planeAngle / 2 - isoHDPerspective.inclination)));
 		transform.scale(isoHDPerspective.scale, isoHDPerspective.scale, Math.sin(Math.toRadians(isoHDPerspective.inclination)));
 		plugin.logger.log("Matrix %s", Json.exportObjectToJson(transform));
 		plugin.logger.log("perspective %s", isoHDPerspective.toString());
@@ -122,7 +138,7 @@ public class ParcelExporter {
 					}
 					plugin.logger.log(" %s => %d tiles %s", region.getId(), mapTiles.length, dynmapCore.getTilesFolder().getAbsolutePath());
 					int minTileX = 0, minTileY = 0, maxTileX = 0, maxTileY = 0;
-					i=0;
+					i = 0;
 					for (MapTile maptile : regionTiles) {
 						if (i == 0) {
 							maxTileX = maptile.tileOrdinalX();
@@ -164,27 +180,24 @@ public class ParcelExporter {
 						Graphics2D g2d = exportParcel.createGraphics();
 						Polygon polygon = new Polygon();
 						g2d.setColor(Color.GRAY);
-						g2d.setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+						g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 						g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.5f));
 						for (int j = 0; j < points.size(); j++) {
 							BlockVector2D point = getPointOnMap(transform, points.get(j), minTileX, minTileY, sizey, w, h);
 							polygon.addPoint((int) point.getX(), (int) point.getZ());
-							//putCross(ExportParcel, point);
+							// putCross(ExportParcel, point);
 						}
-						
-						polygon = expandPolygon(polygon,BufferSize);
-						Rectangle r = new Rectangle(0,0,exportParcel.getWidth(),exportParcel.getHeight());
+
+						polygon = expandPolygon(polygon, BufferSize);
+						Rectangle r = new Rectangle(0, 0, exportParcel.getWidth(), exportParcel.getHeight());
 						Area wholeArea = new Area(r);
 						Area holeArea = new Area(polygon);
 						wholeArea.subtract(holeArea);
 						g2d.fill(wholeArea);
-						
+
 						g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.7f));
-						final  float dash1[] = {2.0f};
-						g2d.setStroke(new BasicStroke(1.0f,
-								BasicStroke.CAP_BUTT,
-								BasicStroke.JOIN_MITER,
-								4.0f, dash1, 0.0f));
+						final float dash1[] = { 2.0f };
+						g2d.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 4.0f, dash1, 0.0f));
 						g2d.setColor(Color.BLACK);
 						g2d.draw(polygon);
 
@@ -197,7 +210,7 @@ public class ParcelExporter {
 						exportParcel = exportParcel.getSubimage(subMinX, subMinY, subMaxX - subMinX, subMaxY - subMinY);
 					}
 					File path = plugin.getExportJsonPath(plugin.getParcelExporterCfg());
-					Images.saveBufferedImage(exportParcel, String.format("%s/%s__%s.png", path, worldName, region.getId()),"png");
+					Images.saveBufferedImage(exportParcel, String.format("%s/%s__%s.png", path, worldName, region.getId()), "png");
 
 					plugin.logger.log(" %s(%d) => %d %d / %d %d / %d %d", region.getId(), mapTiles.length, minTileX * w, minTileY * h, maxTileX * w + w, maxTileY * h + h, sizex * w, sizey * h);
 					plugin.logger.log("-----------------");
@@ -208,41 +221,51 @@ public class ParcelExporter {
 
 	/**
 	 * Expand polygon.
-	 *
-	 * @param polygon the polygon
-	 * @param bufferSize the buffer size
+	 * 
+	 * @param polygon
+	 *            the polygon
+	 * @param bufferSize
+	 *            the buffer size
 	 * @return the polygon
 	 */
 	private Polygon expandPolygon(Polygon polygon, int bufferSize) {
 		Coordinate[] coords = new Coordinate[polygon.npoints];
-		
-		for(int i=0;i<polygon.npoints;i++){
-			coords[i] = new Coordinate(polygon.xpoints[i],polygon.ypoints[i]);
+
+		for (int i = 0; i < polygon.npoints; i++) {
+			coords[i] = new Coordinate(polygon.xpoints[i], polygon.ypoints[i]);
 		}
-		Geometry g  = new GeometryFactory().createMultiPoint(coords);
-		
-		BufferOp bufOp = new BufferOp(g); 
+		Geometry g = new GeometryFactory().createMultiPoint(coords);
+
+		BufferOp bufOp = new BufferOp(g);
 		bufOp.setEndCapStyle(BufferParameters.CAP_ROUND);
 		Geometry outsideGeometry = bufOp.getResultGeometry(bufferSize).convexHull();
-		
-		//Geometry outsideGeometry = g.buffer((double) bufferSize).getBoundary();
+
+		// Geometry outsideGeometry = g.buffer((double)
+		// bufferSize).getBoundary();
 		Polygon outsidePolygon = new Polygon();
-		for(int i=0;i<outsideGeometry.getNumPoints();i++){
-			outsidePolygon.addPoint((int)outsideGeometry.getCoordinates()[i].x,(int)outsideGeometry.getCoordinates()[i].y);
+		for (int i = 0; i < outsideGeometry.getNumPoints(); i++) {
+			outsidePolygon.addPoint((int) outsideGeometry.getCoordinates()[i].x, (int) outsideGeometry.getCoordinates()[i].y);
 		}
 		return outsidePolygon;
 	}
 
 	/**
 	 * Gets the point on map.
-	 *
-	 * @param transform the transform
-	 * @param point the point
-	 * @param minx the minx
-	 * @param miny the miny
-	 * @param sizey the sizey
-	 * @param w the w
-	 * @param h the h
+	 * 
+	 * @param transform
+	 *            the transform
+	 * @param point
+	 *            the point
+	 * @param minx
+	 *            the minx
+	 * @param miny
+	 *            the miny
+	 * @param sizey
+	 *            the sizey
+	 * @param w
+	 *            the w
+	 * @param h
+	 *            the h
 	 * @return the point on map
 	 */
 	private BlockVector2D getPointOnMap(Matrix3D transform, BlockVector2D point, int minx, int miny, int sizey, int w, int h) {

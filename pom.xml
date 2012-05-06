@@ -87,6 +87,11 @@
 			<artifactId>jts</artifactId>
 			<version>1.12</version>
 		</dependency>
+		<dependency>
+			<groupId>org.micoli.minecraft</groupId>
+			<artifactId>morg-LocalPlan</artifactId>
+			<version>[0.2,)</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<sourceDirectory>${basedir}/src/main/java</sourceDirectory>
