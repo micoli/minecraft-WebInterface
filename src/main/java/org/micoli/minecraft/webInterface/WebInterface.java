@@ -9,6 +9,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.micoli.minecraft.bukkit.QDBukkitPlugin;
 import org.micoli.minecraft.bukkit.QDCommand;
+import org.micoli.minecraft.bukkit.QDCommand.SenderType;
 import org.micoli.minecraft.bukkit.QDCommandManager;
 import org.micoli.minecraft.utils.Task;
 import org.micoli.minecraft.webInterface.entities.heroes.HeroesConfigExporter;
@@ -230,25 +231,6 @@ public class WebInterface extends QDBukkitPlugin implements ActionListener {
 	}
 
 	/**
-	 * CmdScan.
-	 * 
-	 * @param sender
-	 *            the sender
-	 * @param command
-	 *            the command
-	 * @param label
-	 *            the label
-	 * @param args
-	 *            the args
-	 * @throws Exception
-	 *             the exception
-	 */
-	@QDCommand(aliases = "scan", permissions = {  }, usage = "[<player>]", description = "list all parcel belonging to a given player, if no player given then use the current player")
-	public void cmdScan(CommandSender sender, Command command, String label, String[] args) throws Exception {
-		instance.exportAll();	
-	}
-	
-	/**
 	 * Gets the export json path.
 	 *
 	 * @return the export json path
@@ -270,4 +252,22 @@ public class WebInterface extends QDBukkitPlugin implements ActionListener {
 		return path;
 	}
 
+	/**
+	 * CmdScan.
+	 * 
+	 * @param sender
+	 *            the sender
+	 * @param command
+	 *            the command
+	 * @param label
+	 *            the label
+	 * @param args
+	 *            the args
+	 * @throws Exception
+	 *             the exception
+	 */
+	@QDCommand(aliases = "scan", permissions = {  }, usage = "[<player>]", description = "list all parcel belonging to a given player, if no player given then use the current player",senderType=SenderType.BOTH)
+	public void cmdScan(CommandSender sender, Command command, String label, String[] args) throws Exception {
+		instance.exportAll();	
+	}
 }
