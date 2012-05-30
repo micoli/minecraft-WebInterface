@@ -7,6 +7,7 @@ import java.io.File;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.Plugin;
 import org.micoli.minecraft.bukkit.QDBukkitPlugin;
 import org.micoli.minecraft.bukkit.QDCommand;
 import org.micoli.minecraft.bukkit.QDCommand.SenderType;
@@ -16,6 +17,9 @@ import org.micoli.minecraft.webInterface.entities.heroes.HeroesConfigExporter;
 import org.micoli.minecraft.webInterface.entities.heroes.HeroesPlayerExporter;
 import org.micoli.minecraft.webInterface.entities.items.ItemDefinitionExporter;
 import org.micoli.minecraft.webInterface.entities.localPlan.ParcelExporter;
+import org.micoli.minecraft.webInterface.listeners.WebInterfaceJSONAPIListener;
+
+import com.alecgorge.minecraft.jsonapi.JSONAPI;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -92,6 +96,13 @@ public class WebInterface extends QDBukkitPlugin implements ActionListener {
 		
 		saveConfig();
 		
+		Plugin checkplugin = this.getServer().getPluginManager().getPlugin("JSONAPI");
+		if (checkplugin != null) {
+			JSONAPI jsonapi = (JSONAPI) checkplugin;
+			WebInterfaceJSONAPIListener webInterfaceJSONAPIListener = new WebInterfaceJSONAPIListener();
+			jsonapi.registerMethods(webInterfaceJSONAPIListener);
+		}
+		
 		Task runningTask = new Task(this, this) {
 			public void run() {
 				instance.exportAll();
@@ -118,9 +129,8 @@ public class WebInterface extends QDBukkitPlugin implements ActionListener {
 		heroesPlayerExporter.exportPlayers();
 		
 		logger.log("Export Parcels");
-		parcelExporter = new ParcelExporter(instance);
-		parcelExporter.exportParcelMaps();
-		parcelExporter.exportParcels();
+		ParcelExporter.exportParcelMaps();
+		ParcelExporter.exportParcels();
 		logger.log("Export finished");
 	}
 

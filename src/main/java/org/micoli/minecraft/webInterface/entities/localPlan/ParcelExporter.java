@@ -12,6 +12,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -51,9 +52,6 @@ import com.vividsolutions.jts.operation.buffer.BufferParameters;
  */
 public class ParcelExporter {
 
-	/** The plugin. */
-	private WebInterface plugin;
-
 	/** The sea level. */
 	private static final int SeaLevel = 65;
 
@@ -69,43 +67,49 @@ public class ParcelExporter {
 	 * @param instance
 	 *            the instance
 	 */
-	public ParcelExporter(WebInterface instance) {
-		this.plugin = instance;
+	
+	public static List<ParcelExport> getAllParcels(){
+		WebInterface.getInstance().logger.log("Parcels");		
+		final LocalPlan localPlan = (LocalPlan) WebInterface.getInstance().getServer().getPluginManager().getPlugin("LocalPlan");
+		if (localPlan == null) {
+			WebInterface.getInstance().logger.log("Could not get acces to LocalPlan plugin");
+			return null;
+		}
+		List<Parcel> listParcels = localPlan.getAllParcel();
+		List<ParcelExport> listParcelExport = new ArrayList<ParcelExport>();
+		for (Parcel parcel :listParcels ){
+			ParcelExport parcelExport = new ParcelExport(parcel);
+			listParcelExport.add(parcelExport);
+		}
+		return listParcelExport; 
 	}
-
+	
 	/**
 	 * Export parcels.
 	 */
-	public void exportParcels() {
-		plugin.logger.log("Parcels");		
-		final LocalPlan localPlan = (LocalPlan) plugin.getServer().getPluginManager().getPlugin("LocalPlan");
-		if (localPlan == null) {
-			plugin.logger.log("Could not get acces to LocalPlan plugin");
-			return;
-		}
-		List<Parcel> parcels = localPlan.getAllParcel();
-		File path = plugin.getExportJsonPath(plugin.getParcelExporterCfg());
-		Json.exportObjectToJson(String.format("%s/__allparcels.json", path),parcels);
-		plugin.logger.log("Parcels done");		
+	public static void exportParcels() {
+		File path = WebInterface.getInstance().getExportJsonPath(WebInterface.getInstance().getParcelExporterCfg());
+		Json.exportObjectToJson(String.format("%s/__allparcels.json", path),ParcelExporter.getAllParcels());
+		WebInterface.getInstance().logger.log("Parcels done");		
 	}
 
-	/**
+		/**
 	 * export the parcel maps.
 	 * 
 	 * @return the maps
 	 */
-	public void exportParcelMaps() {
-		plugin.logger.log("Parcels maps");		
+	public static void exportParcelMaps() {
+		WebInterface.getInstance().logger.log("Parcels maps");		
 		final int planeAngle = 180;
-		DynmapCore dynmapCore = PluginEnvironment.getDynmapCorePlugin(plugin);
+		DynmapCore dynmapCore = PluginEnvironment.getDynmapCorePlugin(WebInterface.getInstance());
 		if (dynmapCore == null) {
-			plugin.logger.log("Could not get acces to DynmapCore from DynmapPlugin");
+			WebInterface.getInstance().logger.log("Could not get acces to DynmapCore from DynmapPlugin");
 			return;
 		}
 
-		IsoHDPerspective isoHDPerspective = (IsoHDPerspective) MapManager.mapman.hdmapman.perspectives.get(plugin.getPerspectiveMapsExporter());
+		IsoHDPerspective isoHDPerspective = (IsoHDPerspective) MapManager.mapman.hdmapman.perspectives.get(WebInterface.getInstance().getPerspectiveMapsExporter());
 		if (isoHDPerspective == null) {
-			plugin.logger.log("Could not get acces to isoHDPerspective from DynmapCore");
+			WebInterface.getInstance().logger.log("Could not get acces to isoHDPerspective from DynmapCore");
 			return;
 		}
 
@@ -120,20 +124,37 @@ public class ParcelExporter {
 		//plugin.logger.log("Matrix %s", Json.exportObjectToJson(transform));
 		//plugin.logger.log("perspective %s", isoHDPerspective.toString());
 
-		for (World world : plugin.getServer().getWorlds()) {
+		for (World world : WebInterface.getInstance().getServer().getWorlds()) {
 			String worldName = world.getName();
 			DynmapWorld dynmapWorld = dynmapCore.getMapManager().getWorld(worldName);
 
-			RegionManager rm = PluginEnvironment.getWorldGuardPlugin(plugin).getRegionManager(world);
+			RegionManager rm = PluginEnvironment.getWorldGuardPlugin(WebInterface.getInstance()).getRegionManager(world);
 			if (rm == null) {
 				continue;
 			}
-
+			boolean full = true;
 			Map<String, ProtectedRegion> regions = rm.getRegions();
 			for (ProtectedRegion region : regions.values()) {
-				if (!region.getId().equalsIgnoreCase("__global__")) {
+				if (!region.getId().equalsIgnoreCase("__global__") || full) {
 					int i;
-					MapTile[] mapTiles = isoHDPerspective.getTiles(dynmapWorld, region.getMinimumPoint().getBlockX(), SeaLevel, region.getMinimumPoint().getBlockZ(), region.getMaximumPoint().getBlockX(), SeaLevel, region.getMaximumPoint().getBlockZ());
+					MapTile[] mapTiles;
+					if(region.getId().equalsIgnoreCase("__global__") ){
+						/*
+						int minx = Integer.MAX_VALUE;
+						int minz = Integer.MAX_VALUE;
+						int maxx = Integer.MIN_VALUE;
+						int maxz = Integer.MIN_VALUE;
+						for (Chunk chunk : world.getLoadedChunks()){
+							minx = Math.min(minx,chunk.getX());
+							minz = Math.min(minz,chunk.getZ());
+							maxx = Math.min(maxx,chunk.getX());
+							maxz = Math.min(maxz,chunk.getZ());
+						}*/
+						//mapTiles = isoHDPerspective.getTiles(dynmapWorld, Integer.MIN_VALUE , SeaLevel, Integer.MIN_VALUE, Integer.MAX_VALUE, SeaLevel, Integer.MAX_VALUE);
+						mapTiles = isoHDPerspective.getTiles(dynmapWorld, region.getMinimumPoint().getBlockX()-256, SeaLevel, region.getMinimumPoint().getBlockZ()-256, region.getMaximumPoint().getBlockX()+256, SeaLevel, region.getMaximumPoint().getBlockZ()+256);
+					}else{
+						mapTiles = isoHDPerspective.getTiles(dynmapWorld, region.getMinimumPoint().getBlockX(), SeaLevel, region.getMinimumPoint().getBlockZ(), region.getMaximumPoint().getBlockX(), SeaLevel, region.getMaximumPoint().getBlockZ());
+					}
 					Set<MapTile> regionTiles = new HashSet<MapTile>(Arrays.asList(mapTiles));
 					for (i = 0; i < mapTiles.length; i++) {
 						regionTiles.addAll(Arrays.asList(mapTiles[i].getAdjecentTiles()));
@@ -166,52 +187,53 @@ public class ParcelExporter {
 						try {
 							Images.copySrcIntoDstAt(ImageIO.read(inFile), exportParcel, (maptile.tileOrdinalX() - minTileX) * w, (sizey - (maptile.tileOrdinalY() - minTileY) - 1) * h);
 						} catch (IOException e) {
-							plugin.logger.dumpStackTrace(e);
+							//plugin.logger.dumpStackTrace(e);
 						}
 					}
-
-					List<BlockVector2D> points = region.getPoints();
-					if (points != null && points.size() > 0) {
-						if (region.getTypeName().equalsIgnoreCase("cuboid")) {
-							BlockVector2D tmpPoint = points.get(points.size() - 1);
-							tmpPoint = points.get(2);
-							points.set(2, points.get(3));
-							points.set(3, tmpPoint);
+					if(!region.getId().equalsIgnoreCase("__global__")){
+						List<BlockVector2D> points = region.getPoints();
+						if (points != null && points.size() > 0) {
+							if (region.getTypeName().equalsIgnoreCase("cuboid")) {
+								BlockVector2D tmpPoint = points.get(points.size() - 1);
+								tmpPoint = points.get(2);
+								points.set(2, points.get(3));
+								points.set(3, tmpPoint);
+							}
+	
+							Graphics2D g2d = exportParcel.createGraphics();
+							Polygon polygon = new Polygon();
+							g2d.setColor(Color.GRAY);
+							g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+							g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.5f));
+							for (int j = 0; j < points.size(); j++) {
+								BlockVector2D point = ParcelExporter.getPointOnMap(transform, points.get(j), minTileX, minTileY, sizey, w, h);
+								polygon.addPoint((int) point.getX(), (int) point.getZ());
+								// putCross(ExportParcel, point);
+							}
+	
+							polygon = ParcelExporter.expandPolygon(polygon, BufferSize);
+							Rectangle r = new Rectangle(0, 0, exportParcel.getWidth(), exportParcel.getHeight());
+							Area wholeArea = new Area(r);
+							Area holeArea = new Area(polygon);
+							wholeArea.subtract(holeArea);
+							g2d.fill(wholeArea);
+	
+							g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.7f));
+							final float dash1[] = { 2.0f };
+							g2d.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 4.0f, dash1, 0.0f));
+							g2d.setColor(Color.BLACK);
+							g2d.draw(polygon);
+	
+							Rectangle2D bound = polygon.getBounds2D();
+							int subMinX = Math.max((int) bound.getMinX() - BorderSize, 1);
+							int subMinY = Math.max((int) bound.getMinY() - BorderSize, 1);
+							int subMaxX = Math.min((int) bound.getMaxX() + BorderSize, exportParcel.getWidth() - 1);
+							int subMaxY = Math.min((int) bound.getMaxY() + BorderSize, exportParcel.getHeight() - 1);
+	
+							exportParcel = exportParcel.getSubimage(subMinX, subMinY, subMaxX - subMinX, subMaxY - subMinY);
 						}
-
-						Graphics2D g2d = exportParcel.createGraphics();
-						Polygon polygon = new Polygon();
-						g2d.setColor(Color.GRAY);
-						g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-						g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.5f));
-						for (int j = 0; j < points.size(); j++) {
-							BlockVector2D point = getPointOnMap(transform, points.get(j), minTileX, minTileY, sizey, w, h);
-							polygon.addPoint((int) point.getX(), (int) point.getZ());
-							// putCross(ExportParcel, point);
-						}
-
-						polygon = expandPolygon(polygon, BufferSize);
-						Rectangle r = new Rectangle(0, 0, exportParcel.getWidth(), exportParcel.getHeight());
-						Area wholeArea = new Area(r);
-						Area holeArea = new Area(polygon);
-						wholeArea.subtract(holeArea);
-						g2d.fill(wholeArea);
-
-						g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.7f));
-						final float dash1[] = { 2.0f };
-						g2d.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 4.0f, dash1, 0.0f));
-						g2d.setColor(Color.BLACK);
-						g2d.draw(polygon);
-
-						Rectangle2D bound = polygon.getBounds2D();
-						int subMinX = Math.max((int) bound.getMinX() - BorderSize, 1);
-						int subMinY = Math.max((int) bound.getMinY() - BorderSize, 1);
-						int subMaxX = Math.min((int) bound.getMaxX() + BorderSize, exportParcel.getWidth() - 1);
-						int subMaxY = Math.min((int) bound.getMaxY() + BorderSize, exportParcel.getHeight() - 1);
-
-						exportParcel = exportParcel.getSubimage(subMinX, subMinY, subMaxX - subMinX, subMaxY - subMinY);
 					}
-					File path = plugin.getExportJsonPath(plugin.getParcelExporterCfg());
+					File path = WebInterface.getInstance().getExportJsonPath(WebInterface.getInstance().getParcelExporterCfg());
 					Images.saveBufferedImage(exportParcel, String.format("%s/%s__%s.png", path, worldName, region.getId()), "png");
 
 					//plugin.logger.log(" %s(%d) => %d %d / %d %d / %d %d", region.getId(), mapTiles.length, minTileX * w, minTileY * h, maxTileX * w + w, maxTileY * h + h, sizex * w, sizey * h);
@@ -219,7 +241,7 @@ public class ParcelExporter {
 				}
 			}
 		}
-		plugin.logger.log("Parcels maps done");		
+		WebInterface.getInstance().logger.log("Parcels maps done");		
 	}
 
 	/**
@@ -231,7 +253,7 @@ public class ParcelExporter {
 	 *            the buffer size
 	 * @return the polygon
 	 */
-	private Polygon expandPolygon(Polygon polygon, int bufferSize) {
+	private static Polygon expandPolygon(Polygon polygon, int bufferSize) {
 		Coordinate[] coords = new Coordinate[polygon.npoints];
 
 		for (int i = 0; i < polygon.npoints; i++) {
@@ -271,7 +293,7 @@ public class ParcelExporter {
 	 *            the h
 	 * @return the point on map
 	 */
-	private BlockVector2D getPointOnMap(Matrix3D transform, BlockVector2D point, int minx, int miny, int sizey, int w, int h) {
+	private static BlockVector2D getPointOnMap(Matrix3D transform, BlockVector2D point, int minx, int miny, int sizey, int w, int h) {
 		Vector3D block = new Vector3D();
 		Vector3D pointInWorld = new Vector3D();
 		block.x = (int) point.getX();
