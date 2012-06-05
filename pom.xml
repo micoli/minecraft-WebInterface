@@ -39,11 +39,6 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>com.sk89q</groupId>
-			<artifactId>worldguard</artifactId>
-			<version>5.5.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<groupId>org.micoli.minecraft</groupId>
 			<artifactId>morg-utils</artifactId>
 			<version>0.5.1-SNAPSHOT</version>
@@ -93,14 +88,14 @@
 			<version>1.12</version>
 		</dependency>
 		<dependency>
-			<groupId>org.micoli.minecraft</groupId>
-			<artifactId>morg-LocalPlan</artifactId>
-			<version>[0.2,)</version>
-		</dependency>
-		<dependency>
 			<groupId>com.ramblingwood.minecraft.jsonapi</groupId>
 			<artifactId>JSONAPI</artifactId>
 			<version>bleeding</version>
+		</dependency>
+		<dependency>
+			<groupId>org.micoli.minecraft</groupId>
+			<artifactId>morg-LocalPlan</artifactId>
+			<version>[0.2,)</version>
 		</dependency>
 	</dependencies>
 	<build>
