@@ -79,6 +79,7 @@ public class ParcelExporter {
 		List<ParcelExport> listParcelExport = new ArrayList<ParcelExport>();
 		for (Parcel parcel :listParcels ){
 			ParcelExport parcelExport = new ParcelExport(parcel);
+			parcelExport.setId(sanitizeFilename(parcelExport.getId()));
 			listParcelExport.add(parcelExport);
 		}
 		return listParcelExport; 
@@ -234,7 +235,7 @@ public class ParcelExporter {
 						}
 					}
 					File path = WebInterface.getInstance().getExportJsonPath(WebInterface.getInstance().getParcelExporterCfg());
-					Images.saveBufferedImage(exportParcel, String.format("%s/%s__%s.png", path, worldName, region.getId()), "png");
+					Images.saveBufferedImage(exportParcel, String.format("%s/%s__%s.png", path, worldName, sanitizeFilename(region.getId())), "png");
 
 					//plugin.logger.log(" %s(%d) => %d %d / %d %d / %d %d", region.getId(), mapTiles.length, minTileX * w, minTileY * h, maxTileX * w + w, maxTileY * h + h, sizex * w, sizey * h);
 					//plugin.logger.log("-----------------");
@@ -242,6 +243,10 @@ public class ParcelExporter {
 			}
 		}
 		WebInterface.getInstance().logger.log("Parcels maps done");		
+	}
+
+	public static String sanitizeFilename(String id) {
+		return id==null?"":id.replaceAll("[:\\\\/*?|<>]", "_");
 	}
 
 	/**
