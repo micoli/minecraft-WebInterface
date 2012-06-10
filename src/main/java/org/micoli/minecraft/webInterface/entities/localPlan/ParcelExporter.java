@@ -191,7 +191,11 @@ public class ParcelExporter {
 							//plugin.logger.dumpStackTrace(e);
 						}
 					}
-					if(!region.getId().equalsIgnoreCase("__global__")){
+					File path = WebInterface.getInstance().getExportJsonPath(WebInterface.getInstance().getParcelExporterCfg());
+					String filename = String.format("%s/%s__%s.png", path, worldName, sanitizeFilename(region.getId()));
+					WebInterface.getInstance().logger.log("%s",filename);
+					
+					if(!region.getId().equalsIgnoreCase("__global__") && !(new File(filename)).exists()){
 						List<BlockVector2D> points = region.getPoints();
 						if (points != null && points.size() > 0) {
 							if (region.getTypeName().equalsIgnoreCase("cuboid")) {
@@ -234,8 +238,7 @@ public class ParcelExporter {
 							exportParcel = exportParcel.getSubimage(subMinX, subMinY, subMaxX - subMinX, subMaxY - subMinY);
 						}
 					}
-					File path = WebInterface.getInstance().getExportJsonPath(WebInterface.getInstance().getParcelExporterCfg());
-					Images.saveBufferedImage(exportParcel, String.format("%s/%s__%s.png", path, worldName, sanitizeFilename(region.getId())), "png");
+					Images.saveBufferedImage(exportParcel, filename, "png");
 
 					//plugin.logger.log(" %s(%d) => %d %d / %d %d / %d %d", region.getId(), mapTiles.length, minTileX * w, minTileY * h, maxTileX * w + w, maxTileY * h + h, sizex * w, sizey * h);
 					//plugin.logger.log("-----------------");
